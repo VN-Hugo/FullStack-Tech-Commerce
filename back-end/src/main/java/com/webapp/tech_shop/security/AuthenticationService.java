@@ -25,16 +25,17 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
+                        request.email(),
+                        request.password()
                 )
         );
-        var user = userService.findByEmail(request.getEmail())
+        var user = userService.findByEmail(request.email())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         tokenService.saveTokens(user, jwtToken, refreshToken);
-        return AuthenticationResponse.builder()
+        return AuthenticationResponse
+                .builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
