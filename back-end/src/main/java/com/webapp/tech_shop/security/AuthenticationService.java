@@ -9,7 +9,7 @@ import com.webapp.tech_shop.security.dto.AuthenticationRequest;
 import com.webapp.tech_shop.security.dto.AuthenticationResponse;
 import com.webapp.tech_shop.security.jwt.JwtService;
 
-import com.webapp.tech_shop.user.UserRepository;
+
 import com.webapp.tech_shop.user.UserService;
 
 import lombok.RequiredArgsConstructor;

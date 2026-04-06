@@ -9,6 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import com.webapp.tech_shop.security.jwt.JwtFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -16,8 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfiguration {
 
     private final AuthenticationProvider authenticationProvider;
-    // private final JwtFilter jwtFilter;
-    // private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -34,9 +34,7 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                // .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                // .oauth2Login(oauth2 -> oauth2
-                //         .successHandler(oAuth2AuthenticationSuccessHandler))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }
