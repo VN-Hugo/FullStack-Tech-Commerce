@@ -16,7 +16,7 @@ import com.webapp.tech_shop.product.dto.UpdateProductRequest;
 import com.webapp.tech_shop.product.dto.ProductInfoForOrder;
 
 @Mapper(componentModel = "spring")
-interface ProductMapper extends GenericMapper<Product,  ProductDetailResponse> {
+public interface ProductMapper extends GenericMapper<Product,  ProductDetailResponse> {
     
     @Mapping(target = "brand", ignore = true)
     @Mapping(target = "status", ignore = true)
