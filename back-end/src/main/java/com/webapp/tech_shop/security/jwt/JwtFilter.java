@@ -13,10 +13,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
@@ -24,7 +27,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-                System.out.println("Filter star here: ");
+                log.debug("JWT Filter triggered for request: {}", request.getServletPath());
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userName;
@@ -35,10 +38,9 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         jwt = authHeader.substring(7);
-        System.out.println("User name here");
+        log.info("Processing JWT: {}...", jwt.length() > 10 ? jwt.substring(0, 10) : "invalid-token");
         userName = jwtService.extractUsername(jwt);
-        System.out.println(userName);
-        System.out.println("User name here");
+        log.info("Extracted Username: {}", userName);
 
         if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);

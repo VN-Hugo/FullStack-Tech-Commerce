@@ -1,23 +1,28 @@
-package com.webapp.tech_shop.security;
+package com.webapp.tech_shop.auth;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.webapp.tech_shop.security.dto.AuthenticationRequest;
-import com.webapp.tech_shop.security.dto.AuthenticationResponse;
+import com.webapp.tech_shop.auth.dto.AuthenticationRequest;
+import com.webapp.tech_shop.auth.dto.AuthenticationResponse;
+
+
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
+
     
 }
