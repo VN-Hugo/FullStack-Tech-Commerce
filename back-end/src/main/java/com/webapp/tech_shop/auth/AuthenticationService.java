@@ -1,12 +1,12 @@
-package com.webapp.tech_shop.security;
+package com.webapp.tech_shop.auth;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-
-import com.webapp.tech_shop.security.dto.AuthenticationRequest;
-import com.webapp.tech_shop.security.dto.AuthenticationResponse;
+import com.webapp.tech_shop.auth.dto.AuthenticationRequest;
+import com.webapp.tech_shop.auth.dto.AuthenticationResponse;
+import com.webapp.tech_shop.security.TokenService;
 import com.webapp.tech_shop.security.jwt.JwtService;
 
 
@@ -21,7 +21,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final TokenService tokenService;
-
+    //login
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -31,7 +31,7 @@ public class AuthenticationService {
         );
         var user = userService.findByEmail(request.email())
                 .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
+        var jwtToken = jwtService.generateAccessToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         tokenService.saveTokens(user, jwtToken, refreshToken);
         return AuthenticationResponse

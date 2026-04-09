@@ -1,4 +1,4 @@
-package com.webapp.tech_shop.security.dto;
+package com.webapp.tech_shop.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
