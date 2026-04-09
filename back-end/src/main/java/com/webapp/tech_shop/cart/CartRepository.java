@@ -2,7 +2,16 @@ package com.webapp.tech_shop.cart;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import java.util.Optional;
+import java.util.UUID;
 @Repository
-public class CartRepository extends JpaRepository<Cart, Long> {
-    
+public interface CartRepository extends JpaRepository<Cart, UUID> {
+    // Lấy giỏ hàng kèm theo danh sách sản phẩm để tránh lỗi LazyInitializationException
+    @Query("SELECT c FROM Cart c LEFT JOIN FETCH c.cartItems WHERE c.user.id = :userId")
+    Optional<Cart> findByUserIdWithItems(@Param("userId") UUID userId);
+
+    // Tìm kiếm cơ bản theo User ID
+    Optional<Cart> findByUserId(UUID userId);
 }
