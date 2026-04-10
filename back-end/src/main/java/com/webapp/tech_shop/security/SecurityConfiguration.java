@@ -19,16 +19,19 @@ public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final JwtFilter jwtFilter;
 
+    private static final String[] AUTH_WHITELIST = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/api/auth/**"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(req -> req
-                        .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/authenticate")
+                        .requestMatchers(AUTH_WHITELIST)
                         .permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session

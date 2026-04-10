@@ -26,12 +26,12 @@ public class CartService {
 
 
     private Cart CreateCartEntity(UUID userId) {
-        return cartRepository.findByUserId(userId)
+        return cartRepository.findByCustomerId(userId)
                 .orElseGet(() -> {
                     Cart newCart = new Cart();
                     newCart.setCustomerId(userId);
-                    newCart.setTotalproduct(0);
-                    newCart.setTotalprice(BigDecimal.ZERO);
+                    newCart.setTotalProduct(0);
+                    newCart.setTotalPrice(BigDecimal.ZERO);
                     return cartRepository.save(newCart);
                 });
     }
@@ -76,7 +76,7 @@ public class CartService {
                     );
                 }).toList();
 
-        return new CartResponse(cart.getId(), itemResponses, cart.getTotalproduct(), cart.getTotalprice());
+        return new CartResponse(cart.getId(), itemResponses, cart.getTotalProduct(), cart.getTotalPrice());
     }
 
     // add product to cart
@@ -139,8 +139,8 @@ public class CartService {
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        cart.setTotalproduct(totalQty);
-        cart.setTotalprice(totalPrice);
+        cart.setTotalProduct(totalQty);
+        cart.setTotalPrice(totalPrice);
         cartRepository.save(cart);
     }
 }
