@@ -86,16 +86,13 @@ public class JwtService {
     
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token); //&& !isTokenRevoked(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token); 
     }
-
-    // private boolean isTokenRevoked(String token) {
-    //     return tokenRepository.findByToken(token)
-    //             .map(t -> t.isRevoked() || t.isExpired())
-    //             .orElse(true);
-    // }
     public boolean isAccessTokenValid(String token, UserDetails userDetails) {
         return isTokenvalid(token, userDetails, TokenType.ACCESS_TOKEN);
+    }
+    public boolean isRefreshTokenValid(String token, UserDetails userDetails) {
+        return isTokenvalid(token, userDetails, TokenType.REFRESH_TOKEN);
     }
 
     private boolean isTokenvalid(String token, UserDetails userDetails, TokenType tokenType) {

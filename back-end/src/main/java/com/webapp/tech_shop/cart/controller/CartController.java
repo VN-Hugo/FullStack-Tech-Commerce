@@ -21,6 +21,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.*;
 
 import com.webapp.tech_shop.user.User;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,7 +48,9 @@ public class CartController {
 
     // 2. Thêm sản phẩm vào giỏ
     @PostMapping("/items")
-    public ResponseEntity<Void> addToCart(@AuthenticationPrincipal User user,@RequestBody AddToCartRequest request) {
+    public ResponseEntity<Void> addToCart(
+        @AuthenticationPrincipal User user,
+        @Valid @RequestBody AddToCartRequest request) {
         cartService.addToCart(user.getId(), request);
         return ResponseEntity.ok().build();
     }

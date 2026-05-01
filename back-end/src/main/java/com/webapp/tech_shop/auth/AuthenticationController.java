@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.webapp.tech_shop.auth.dto.AuthenticationRequest;
 import com.webapp.tech_shop.auth.dto.AuthenticationResponse;
-
+import com.webapp.tech_shop.auth.dto.RefreshTokenRequest;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +23,8 @@ public class AuthenticationController {
         
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
-
-    
+   @PostMapping("/refresh")
+    public ResponseEntity<AuthenticationResponse> refresh(@RequestBody RefreshTokenRequest request) {
+    return ResponseEntity.ok(authenticationService.refresh(request));
+    }       
 }

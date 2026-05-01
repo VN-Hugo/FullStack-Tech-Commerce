@@ -4,8 +4,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+
 import com.webapp.tech_shop.auth.dto.AuthenticationRequest;
 import com.webapp.tech_shop.auth.dto.AuthenticationResponse;
+import com.webapp.tech_shop.auth.dto.RefreshTokenRequest;
 import com.webapp.tech_shop.security.TokenService;
 import com.webapp.tech_shop.security.jwt.JwtService;
 
@@ -39,5 +41,27 @@ public class AuthenticationService {
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+    //refresh token
+    public AuthenticationResponse refresh(RefreshTokenRequest request) {
+        final String refreshToken = request.refreshToken();
+        final String userEmail = jwtService.extractUsername(refreshToken);
+        if(userEmail != null)
+        {
+          var user = userService.findByEmail(userEmail)
+          .orElseThrow(() -> new RuntimeException("User not found"));
+          if(jwtService.isRefreshTokenValid(refreshToken, user))
+          {
+            var jwtToken = jwtService.generateAccessToken(user);
+            var newRefreshToken = jwtService.generateRefreshToken(user);
+            tokenService.saveTokens(user, jwtToken, newRefreshToken);
+            return AuthenticationResponse
+                    .builder()
+                    .accessToken(jwtToken)
+                    .refreshToken(newRefreshToken)
+                    .build();
+          }
+        }
+        throw new RuntimeException("Refresh token không hợp lệ!");
     }
 }
