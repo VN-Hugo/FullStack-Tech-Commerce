@@ -16,16 +16,20 @@ import com.webapp.tech_shop.product.dto.UpdateProductRequest;
 import com.webapp.tech_shop.product.dto.ProductInfoForOrder;
 
 @Mapper(componentModel = "spring")
+public interface ProductMapper extends GenericMapper<Product, ProductDetailResponse> {
 
-public interface ProductMapper extends GenericMapper<Product,  ProductDetailResponse> {
-    
+    ProductDetailResponse toDto(Product product);
+
+    List<ProductDetailResponse> toDtoList(List<Product> products);
+
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "brand", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "categories", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Product fromCreateRequestToProduct(CreateProductRequest request);
-    
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "brand", ignore = true)
@@ -33,7 +37,9 @@ public interface ProductMapper extends GenericMapper<Product,  ProductDetailResp
     @Mapping(target = "categories", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    void updateProductFromUpdateRequest(UpdateProductRequest request,@MappingTarget Product product);
+    void updateProductFromUpdateRequest(UpdateProductRequest request, @MappingTarget Product product);
+
+    ProductInfoForOrder toProductInfoForOrder(Product product);
 
     List<ProductInfoForOrder> toProductInfoForOrders(List<Product> products);
 

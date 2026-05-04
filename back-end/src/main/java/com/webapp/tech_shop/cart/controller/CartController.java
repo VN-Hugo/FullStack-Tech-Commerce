@@ -1,13 +1,12 @@
-package com.webapp.tech_shop.cart;
+package com.webapp.tech_shop.cart.controller;
 
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.webapp.tech_shop.cart.CartService;
 import com.webapp.tech_shop.cart.dto.AddToCartRequest;
 import com.webapp.tech_shop.cart.dto.CartResponse;
-
-
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
