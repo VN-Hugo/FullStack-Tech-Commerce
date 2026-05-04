@@ -7,10 +7,10 @@ import java.util.UUID;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.webapp.tech_shop.cart.Cart;
-import com.webapp.tech_shop.cart.CartItem;
 import com.webapp.tech_shop.cart.dto.CartItemResponse;
 import com.webapp.tech_shop.cart.dto.CartResponse;
+import com.webapp.tech_shop.cart.model.Cart;
+import com.webapp.tech_shop.cart.model.CartItem;
 import com.webapp.tech_shop.product.dto.ProductInfoForOrder;
 
 @Mapper(componentModel = "spring")

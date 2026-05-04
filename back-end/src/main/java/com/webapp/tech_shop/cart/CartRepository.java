@@ -1,6 +1,9 @@
 package com.webapp.tech_shop.cart;
 
 import org.springframework.stereotype.Repository;
+
+import com.webapp.tech_shop.cart.model.Cart;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

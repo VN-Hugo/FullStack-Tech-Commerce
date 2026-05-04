@@ -1,4 +1,4 @@
-package com.webapp.tech_shop.cart;
+package com.webapp.tech_shop.cart.model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

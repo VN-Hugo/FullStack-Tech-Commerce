@@ -11,6 +11,11 @@ import com.webapp.tech_shop.product.dto.UpdateProductRequest;
 
 import com.webapp.tech_shop.shared.PageResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import java.util.UUID;
@@ -19,15 +24,14 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
+@Tag(name = "Product Management", description = "APIs for managing products")
 public class ProductController {
     private final  ProductService productService;
-    // @GetMapping("/{id}")
-    //     public Repo getProduct(@PathVariable UUID id) {
-    //         return productService.viewDetailsOfProduct(id);
-    //     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDetailResponse> viewDetailsOfProduct(@PathVariable UUID id) {
+    @Operation(summary = "Get product details", description = "Retrieve detailed information about a specific product")
+    public ResponseEntity<ProductDetailResponse> viewDetailsOfProduct(
+        @Parameter(description = "Product ID", required = true, schema = @Schema(type = "string", format = "uuid")) @PathVariable UUID id) {
         return ResponseEntity.ok(productService.viewDetailsOfProduct(id));
 
     }
@@ -39,13 +43,16 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable UUID id){
+    @Operation(summary = "Delete product", description = "Delete a product by its ID")
+    public ResponseEntity<String> deleteProduct(
+        @Parameter(description = "Product ID", required = true, schema = @Schema(type = "string", format = "uuid")) @PathVariable UUID id){
         return ResponseEntity.ok( productService.deleteProduct(id));
     }
     
     @PatchMapping("/{id}")
+    @Operation(summary = "Update product", description = "Update product information by its ID")
     public ResponseEntity<ProductDetailResponse> updateProduct(
-        @PathVariable UUID id,
+        @Parameter(description = "Product ID", required = true, schema = @Schema(type = "string", format = "uuid")) @PathVariable UUID id,
         @RequestBody @Valid UpdateProductRequest request
     ){
         return ResponseEntity.ok(productService.updateProduct(request, id));
@@ -53,7 +60,7 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<PageResponse<ProductDetailResponse>> getProducts(
-        @RequestParam(required = false, defaultValue = "1") int page
+        @RequestParam(name="page", required = false, defaultValue = "1") int page
     ){
         Pageable pageable = PageRequest.of(page-1, 10, Sort.by("createdAt").descending());
         return ResponseEntity.ok(productService.getProducts(pageable));

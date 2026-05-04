@@ -1,10 +1,9 @@
-package com.webapp.tech_shop.cart;
+package com.webapp.tech_shop.cart.model;
 
 import java.time.LocalDateTime;
 
 
 import org.springframework.data.annotation.CreatedDate;
-
 
 import com.webapp.tech_shop.shared.BaseEntity;
 

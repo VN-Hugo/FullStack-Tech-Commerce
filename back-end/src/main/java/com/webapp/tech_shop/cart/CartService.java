@@ -7,6 +7,8 @@ import com.webapp.tech_shop.cart.dto.CartResponse;
 import com.webapp.tech_shop.cart.dto.AddToCartRequest;
 import com.webapp.tech_shop.cart.dto.CartItemResponse;
 import com.webapp.tech_shop.cart.mapper.CartMapper;
+import com.webapp.tech_shop.cart.model.Cart;
+import com.webapp.tech_shop.cart.model.CartItem;
 import com.webapp.tech_shop.exception.BaseException;
 import com.webapp.tech_shop.exception.ErrorCode;
 import com.webapp.tech_shop.product.ProductService;

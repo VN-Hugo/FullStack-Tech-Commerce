@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.webapp.tech_shop.cart.Cart;
-import com.webapp.tech_shop.cart.CartItem;
 import com.webapp.tech_shop.cart.CartRepository;
+import com.webapp.tech_shop.cart.model.Cart;
+import com.webapp.tech_shop.cart.model.CartItem;
 import com.webapp.tech_shop.exception.BaseException;
 import com.webapp.tech_shop.exception.ErrorCode;
 import com.webapp.tech_shop.order.dto.CreateOrderRequest;
