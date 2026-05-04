@@ -7,6 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
 import com.webapp.tech_shop.product.model.Product;
 import com.webapp.tech_shop.shared.GenericMapper;
@@ -15,12 +16,8 @@ import com.webapp.tech_shop.product.dto.CreateProductRequest;
 import com.webapp.tech_shop.product.dto.UpdateProductRequest;
 import com.webapp.tech_shop.product.dto.ProductInfoForOrder;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductMapper extends GenericMapper<Product, ProductDetailResponse> {
-
-    ProductDetailResponse toDto(Product product);
-
-    List<ProductDetailResponse> toDtoList(List<Product> products);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "brand", ignore = true)

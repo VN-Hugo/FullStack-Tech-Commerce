@@ -3,7 +3,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -13,5 +12,9 @@ public class UserService {
 
     public Optional<User> findByEmail(String email){
         return repository.findByEmail(email);
+    }
+
+    public User save(User user) {
+        return repository.save(user);
     }
 }

@@ -11,8 +11,10 @@ public enum ErrorCode {
     // Product Errors
     PRODUCT_NOT_FOUND("PRODUCT_001", "Product Not Found", "The requested product does not exist", HttpStatus.NOT_FOUND),
     // Authentication Errors
-    INVALID_CREDENTIALS("AUTH_001", "Invalid Credentials", "The provided credentials areinvalid", HttpStatus.UNAUTHORIZED),
+    INVALID_CREDENTIALS("AUTH_001", "Invalid Credentials", "The provided credentials are invalid", HttpStatus.UNAUTHORIZED),
     USER_ALREADY_EXISTS("AUTH_002", "User Already Exists", "A user with the provided email already exists", HttpStatus.BAD_REQUEST),
+    INVALID_REFRESH_TOKEN("AUTH_003", "Invalid Refresh Token", "Refresh token is invalid or expired", HttpStatus.UNAUTHORIZED),
+    USER_NOT_FOUND("AUTH_004", "User Not Found", "The requested user was not found", HttpStatus.NOT_FOUND),
     // Order Errors
     ORDER_NOT_FOUND("ORDER_001", "Order Not Found", "The requested order does not exist", HttpStatus.NOT_FOUND),
     INSUFFICIENT_STOCK("ORDER_002", "Insufficient Stock", "The requested product quantity is not enough", HttpStatus.BAD_REQUEST),
