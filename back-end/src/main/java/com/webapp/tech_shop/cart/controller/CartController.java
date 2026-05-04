@@ -35,17 +35,15 @@ public class CartController {
     
     private final CartService cartService;
 
-
     @GetMapping("/me")
     public ResponseEntity<CartResponse> getCart(
         @AuthenticationPrincipal User user) {
     
-    return ResponseEntity.ok(
-        cartService.getCartOfCurrentUser(user.getId())
-    );
+        return ResponseEntity.ok(
+            cartService.getCartOfCurrentUser(user.getId())
+        );
     }
 
-    // 2. Thêm sản phẩm vào giỏ
     @PostMapping("/items")
     public ResponseEntity<Void> addToCart(
         @AuthenticationPrincipal User user,
@@ -54,7 +52,6 @@ public class CartController {
         return ResponseEntity.ok().build();
     }
 
-    // 3. Cập nhật số lượng của một Item trong giỏ
     @PatchMapping("/items/{itemId}")
     public ResponseEntity<Void> updateQuantity(
             @PathVariable UUID itemId, 
@@ -64,18 +61,9 @@ public class CartController {
         return ResponseEntity.ok().build();
     }
 
-    // 4. Xóa một món khỏi giỏ
     @DeleteMapping("/items/{itemId}")
     public ResponseEntity<Void> removeItem(@PathVariable UUID itemId) {
         cartService.removeItem(itemId);
         return ResponseEntity.noContent().build();
     }
-
-    // // 5. Làm trống giỏ hàng
-    // @DeleteMapping("/me")
-    // public ResponseEntity<Void> clearCart(@AuthenticationPrincipal User user) {
-    //     cartService.clearCart(user.getId());
-    //     return ResponseEntity.noContent().build();
-    // }
-    
 }

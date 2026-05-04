@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import com.webapp.tech_shop.cart.dto.CartResponse;
 import com.webapp.tech_shop.cart.dto.AddToCartRequest;
 import com.webapp.tech_shop.cart.dto.CartItemResponse;
+import com.webapp.tech_shop.cart.mapper.CartMapper;
+import com.webapp.tech_shop.exception.BaseException;
+import com.webapp.tech_shop.exception.ErrorCode;
 import com.webapp.tech_shop.product.ProductService;
 import com.webapp.tech_shop.product.dto.ProductInfoForOrder;
 
@@ -23,9 +26,10 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final ProductService productService;
+    private final CartMapper cartMapper;
 
 
-    private Cart CreateCartEntity(UUID userId) {
+    private Cart createCartEntity(UUID userId) {
         return cartRepository.findByCustomerId(userId)
                 .orElseGet(() -> {
                     Cart newCart = new Cart();
@@ -38,7 +42,11 @@ public class CartService {
     
    // 1. Lấy giỏ hàng (Kỹ thuật gộp dữ liệu giữa 2 module)
     public CartResponse getCartOfCurrentUser(UUID userId) {
-         Cart cart = CreateCartEntity(userId);
+        if (userId == null) {
+            throw new BaseException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+        }
+
+        Cart cart = createCartEntity(userId);
         List<CartItem> items = cart.getCartItems();
 
         if (items.isEmpty()) {
@@ -60,29 +68,25 @@ public class CartService {
 
         // Build danh sách Item Response
         List<CartItemResponse> itemResponses = items.stream()
-                .map(item -> {
-                    ProductInfoForOrder pInfo = productMap.get(item.getProductId());
-                    BigDecimal price = (pInfo != null) ? pInfo.price() : BigDecimal.ZERO;
-                    String name = (pInfo != null) ? pInfo.name() : "Sản phẩm không tồn tại";
-                    
-                    return new CartItemResponse(
-                            item.getId(),
-                            item.getProductId(),
-                            name,
-                            item.getQuantity(),
-                            null,
-                            price,
-                            price.multiply(BigDecimal.valueOf(item.getQuantity()))
-                    );
-                }).toList();
+                .map(item -> cartMapper.toCartItemResponse(item, productMap))
+                .toList();
 
         return new CartResponse(cart.getId(), itemResponses, cart.getTotalProduct(), cart.getTotalPrice());
     }
 
     // add product to cart
     @Transactional
-    public void addToCart(UUID userId, AddToCartRequest request) { 
-        Cart cart = CreateCartEntity(userId);
+    public void addToCart(UUID userId, AddToCartRequest request) {
+        validateAddToCartRequest(userId, request);
+        
+        Cart cart = createCartEntity(userId);
+        
+        // Verify product exists
+        List<ProductInfoForOrder> products = productService.getProductsForOrder(List.of(request.productId()));
+        if (products.isEmpty()) {
+            throw new BaseException(ErrorCode.PRODUCT_NOT_AVAILABLE);
+        }
+
         Optional<CartItem> existingItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), request.productId());
 
         if (existingItem.isPresent()) {
@@ -92,7 +96,7 @@ public class CartService {
         } else {
             CartItem newItem = new CartItem();
             newItem.setCart(cart);
-            newItem.setProductId(request.productId()); // Chỉ lưu ID
+            newItem.setProductId(request.productId());
             newItem.setQuantity(request.quantity());
             cartItemRepository.save(newItem);
         }
@@ -103,22 +107,31 @@ public class CartService {
     // Update quantity
     @Transactional
     public void updateQuantity(UUID itemId, Integer newQuantity) {
-        CartItem item = cartItemRepository.findById(itemId)
-                .orElseThrow(() -> new RuntimeException("Item not found"));
-
-        if (newQuantity <= 0) {
-            removeItem(itemId);
-        } else {
-            item.setQuantity(newQuantity);
-            cartItemRepository.save(item);
-            syncCartTotals(item.getCart());
+        if (itemId == null) {
+            throw new BaseException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
+
+        if (newQuantity == null || newQuantity <= 0) {
+            throw new BaseException(ErrorCode.INVALID_QUANTITY);
+        }
+
+        CartItem item = cartItemRepository.findById(itemId)
+                .orElseThrow(() -> new BaseException(ErrorCode.CART_ITEM_NOT_FOUND));
+
+        item.setQuantity(newQuantity);
+        cartItemRepository.save(item);
+        syncCartTotals(item.getCart());
     }
 
     @Transactional
     public void removeItem(UUID itemId) {
+        if (itemId == null) {
+            throw new BaseException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+        }
+
         CartItem item = cartItemRepository.findById(itemId)
-                .orElseThrow(() -> new RuntimeException("Item not found"));
+                .orElseThrow(() -> new BaseException(ErrorCode.CART_ITEM_NOT_FOUND));
+        
         Cart cart = item.getCart();
         cartItemRepository.delete(item);
         syncCartTotals(cart);
@@ -127,6 +140,13 @@ public class CartService {
     private void syncCartTotals(Cart cart) {
         List<CartItem> items = cartItemRepository.findAllByCartId(cart.getId());
         
+        if (items.isEmpty()) {
+            cart.setTotalProduct(0);
+            cart.setTotalPrice(BigDecimal.ZERO);
+            cartRepository.save(cart);
+            return;
+        }
+
         List<UUID> pIds = items.stream().map(CartItem::getProductId).toList();
         Map<UUID, BigDecimal> priceMap = productService.getProductsForOrder(pIds).stream()
                 .collect(Collectors.toMap(ProductInfoForOrder::id, ProductInfoForOrder::price));
@@ -142,5 +162,20 @@ public class CartService {
         cart.setTotalProduct(totalQty);
         cart.setTotalPrice(totalPrice);
         cartRepository.save(cart);
+    }
+
+    private void validateAddToCartRequest(UUID userId, AddToCartRequest request) {
+        if (userId == null) {
+            throw new BaseException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+        }
+        if (request == null) {
+            throw new BaseException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+        }
+        if (request.productId() == null) {
+            throw new BaseException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+        }
+        if (request.quantity() == null || request.quantity() <= 0) {
+            throw new BaseException(ErrorCode.INVALID_QUANTITY);
+        }
     }
 }

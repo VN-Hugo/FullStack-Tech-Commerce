@@ -21,6 +21,8 @@ public enum ErrorCode {
     // Cart Errors 
     CART_NOT_FOUND("CART_001", "Cart Not Found", "The requested cart does not exist", HttpStatus.NOT_FOUND),
     CART_ITEM_NOT_FOUND("CART_002", "Cart Item Not Found", "The requested cart item does not exist", HttpStatus.NOT_FOUND),
+    INVALID_QUANTITY("CART_003", "Invalid Quantity", "Quantity must be greater than 0", HttpStatus.BAD_REQUEST),
+    PRODUCT_NOT_AVAILABLE("CART_004", "Product Not Available", "The requested product is not available or does not exist", HttpStatus.CONFLICT),
     // Generic Erors
     UNCATEGORIZED_EXCEPTION("9999", "Uncategorized Error", "An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
     private final String code;
