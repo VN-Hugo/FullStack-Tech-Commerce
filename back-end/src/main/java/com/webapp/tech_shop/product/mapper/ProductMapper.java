@@ -9,6 +9,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
+import com.webapp.tech_shop.product.model.Category;
 import com.webapp.tech_shop.product.model.Product;
 import com.webapp.tech_shop.shared.GenericMapper;
 import com.webapp.tech_shop.product.dto.ProductDetailResponse;
@@ -36,8 +37,17 @@ public interface ProductMapper extends GenericMapper<Product, ProductDetailRespo
     @Mapping(target = "updatedAt", ignore = true)
     void updateProductFromUpdateRequest(UpdateProductRequest request, @MappingTarget Product product);
 
+    @Mapping(target = "brandName", source = "brand.name")
+    @Mapping(target = "categoryNames", source = "categories")
+    ProductDetailResponse toDto(Product product);
+
     ProductInfoForOrder toProductInfoForOrder(Product product);
 
     List<ProductInfoForOrder> toProductInfoForOrders(List<Product> products);
 
+    default List<String> categoriesToNames(List<Category> categories) {
+        return categories == null ? List.of() : categories.stream().map(Category::getName).toList();
+    }
+
 }
+

@@ -11,6 +11,7 @@ import com.webapp.tech_shop.product.model.Product;
 import com.webapp.tech_shop.product.model.ProductStatus;
 import com.webapp.tech_shop.shared.PageResponse;
 import com.webapp.tech_shop.product.dto.ProductDetailResponse;
+import com.webapp.tech_shop.product.dto.ProductSearchCriteria;
 import com.webapp.tech_shop.product.dto.CreateProductRequest;
 import com.webapp.tech_shop.product.dto.UpdateProductRequest;
 import com.webapp.tech_shop.product.dto.ProductInfoForOrder;  
@@ -27,6 +28,7 @@ public class ProductService {
     private final ProductMapper productMapper;
     
 
+    @Transactional(readOnly = true)
     public ProductDetailResponse viewDetailsOfProduct(UUID id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(()-> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -58,11 +60,19 @@ public class ProductService {
         return productMapper.toDto(product);
     }
 
+    @Transactional(readOnly = true)
     public PageResponse<ProductDetailResponse> getProducts(Pageable pageable) {
         Page<Product> products = productRepository.findWithPageReponseBy(pageable);
         return productMapper.toPageResponse(products);
     }
 
+    @Transactional(readOnly = true)
+    public PageResponse<ProductDetailResponse> searchProducts(ProductSearchCriteria criteria, Pageable pageable) {
+        Page<Product> products = productRepository.search(criteria, pageable);
+        return productMapper.toPageResponse(products);
+    }
+
+    @Transactional(readOnly = true)
     public List<ProductInfoForOrder> getProductsForOrder(List<UUID> ids){
         List<Product> products = productRepository.findAllByIdIn(ids);
         return productMapper.toProductInfoForOrders(products);

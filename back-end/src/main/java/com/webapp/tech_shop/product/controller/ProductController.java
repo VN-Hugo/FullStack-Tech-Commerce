@@ -1,10 +1,14 @@
 package com.webapp.tech_shop.product.controller;
 
+import java.math.BigDecimal;
+import java.util.UUID;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.*;
 import com.webapp.tech_shop.product.ProductService;
+import com.webapp.tech_shop.product.dto.ProductSearchCriteria;
 import com.webapp.tech_shop.product.dto.CreateProductRequest;
 import com.webapp.tech_shop.product.dto.ProductDetailResponse;
 import com.webapp.tech_shop.product.dto.UpdateProductRequest;
@@ -18,7 +22,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import java.util.UUID;
 
 
 @RestController
@@ -60,9 +63,18 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<PageResponse<ProductDetailResponse>> getProducts(
-        @RequestParam(name="page", required = false, defaultValue = "1") int page
-    ){
-        Pageable pageable = PageRequest.of(page-1, 10, Sort.by("createdAt").descending());
-        return ResponseEntity.ok(productService.getProducts(pageable));
+        @RequestParam(name = "page", required = false, defaultValue = "1") int page,
+        @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+        @RequestParam(name = "name", required = false) String name,
+        @RequestParam(name = "priceMin", required = false) BigDecimal priceMin,
+        @RequestParam(name = "priceMax", required = false) BigDecimal priceMax,
+        @RequestParam(name = "brandId", required = false) UUID brandId,
+        @RequestParam(name = "brandName", required = false) String brandName,
+        @RequestParam(name = "categoryId", required = false) UUID categoryId,
+        @RequestParam(name = "categoryName", required = false) String categoryName
+    ) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("createdAt").descending());
+        ProductSearchCriteria criteria = new ProductSearchCriteria(name, priceMin, priceMax, brandId, brandName, categoryId, categoryName);
+        return ResponseEntity.ok(productService.searchProducts(criteria, pageable));
     }
 }

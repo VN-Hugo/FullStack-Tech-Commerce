@@ -13,7 +13,7 @@ import java.util.UUID;
 import java.util.List;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, UUID> {
+public interface ProductRepository extends JpaRepository<Product, UUID>, ProductRepositoryCustom {
     @Modifying
     @Query("Delete from Product p where p.id = :id")
     int deleteProductById(@Param("id") UUID id);

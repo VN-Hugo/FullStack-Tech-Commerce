@@ -25,7 +25,7 @@ public class SecurityConfiguration {
             "/swagger-ui.html",
             "/api/auth/**"
     };
-
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
