@@ -87,6 +87,19 @@ public class OrderService {
                 .orElseThrow(() -> new BaseException(ErrorCode.ORDER_NOT_FOUND));
     }
 
+    @Transactional
+    public Order confirmOrder(UUID customerId, UUID orderId) {
+        Order order = getOrderById(customerId, orderId);
+        if (order.getStatus() == OrderStatus.PAID) {
+            return order;
+        }
+        if (order.getStatus() != OrderStatus.IN_PROCESS) {
+            throw new BaseException(ErrorCode.ORDER_CANNOT_CONFIRM);
+        }
+        order.setStatus(OrderStatus.PAID);
+        return orderRepository.save(order);
+    }
+
     private OrderItem mapToOrderItem(CartItem item, Map<UUID, ProductInfoForOrder> productMap) {
         ProductInfoForOrder productInfo = Optional.ofNullable(productMap.get(item.getProductId()))
                 .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));

@@ -17,7 +17,8 @@ public enum ErrorCode {
     USER_NOT_FOUND("AUTH_004", "User Not Found", "The requested user was not found", HttpStatus.NOT_FOUND),
     // Order Errors
     ORDER_NOT_FOUND("ORDER_001", "Order Not Found", "The requested order does not exist", HttpStatus.NOT_FOUND),
-    INSUFFICIENT_STOCK("ORDER_002", "Insufficient Stock", "The requested product quantity is not enough", HttpStatus.BAD_REQUEST),
+    ORDER_CANNOT_CONFIRM("ORDER_002", "Cannot Confirm Order", "The order cannot be confirmed in its current status", HttpStatus.BAD_REQUEST),
+    INSUFFICIENT_STOCK("ORDER_003", "Insufficient Stock", "The requested product quantity is not enough", HttpStatus.BAD_REQUEST),
     // Cart Errors 
     CART_NOT_FOUND("CART_001", "Cart Not Found", "The requested cart does not exist", HttpStatus.NOT_FOUND),
     CART_ITEM_NOT_FOUND("CART_002", "Cart Item Not Found", "The requested cart item does not exist", HttpStatus.NOT_FOUND),

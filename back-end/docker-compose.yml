@@ -1,0 +1,34 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: tech-shop-db
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_DB=tech_shop_db
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD} # Lấy từ .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: DockerFile
+    image: tech-shop-app:latest
+    ports:
+      - '8081:8081'
+    depends_on:
+      - db
+    environment:
+      - DB_URL=jdbc:postgresql://db:5432/tech_shop_db
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}        
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}  
+      - GG_OAUTH2ID_CLIENT=${GG_OAUTH2ID_CLIENT}
+      - GG_OAUTH2ID_SECRET=${GG_OAUTH2ID_SECRET}
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

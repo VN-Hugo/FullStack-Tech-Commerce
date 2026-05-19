@@ -3,20 +3,26 @@ FROM gradle:8.5-jdk17 AS build
 WORKDIR /app
 
 # Copy gradle wrapper and source code
-COPY build.gradle settings.gradle ./
+COPY build.gradle settings.gradle gradlew gradlew.bat ./
 COPY gradle ./gradle
+
+RUN chmod +x gradlew
+
 COPY src ./src
 
-# Build file jar và bỏ qua chạy unit test để nhanh hơn
-RUN gradle clean build -x test
 
-# Bước 2: Tạo image chạy (Runtime Image) cực nhẹ
-FROM eclipse-temurin:17-jre-alpine
+# Build file jar và bỏ qua chạy unit test để nhanh hơn
+RUN ./gradlew clean build -x test
+
+# Bước 2: Tạo image chạy (Runtime Image)
+FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 # Copy file jar từ bước build sang image chạy này
 # Gradle mặc định build ra file trong thư mục build/libs/
 COPY --from=build /app/build/libs/*.jar app.jar
+
+EXPOSE 8081
 
 # Chạy ứng dụng
 ENTRYPOINT ["java", "-jar", "app.jar"]

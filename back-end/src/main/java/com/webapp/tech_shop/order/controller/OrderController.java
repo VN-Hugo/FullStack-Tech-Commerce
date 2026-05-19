@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.webapp.tech_shop.order.OrderService;
+import io.swagger.v3.oas.annotations.Operation;
 import com.webapp.tech_shop.order.dto.CreateOrderRequest;
 import com.webapp.tech_shop.order.dto.OrderDetailResponse;
 import com.webapp.tech_shop.order.dto.OrderItemResponse;
@@ -57,6 +58,16 @@ public class OrderController {
             @PathVariable UUID orderId) {
 
         Order order = orderService.getOrderById(user.getId(), orderId);
+        return ResponseEntity.ok(toResponse(order));
+    }
+
+    @Operation(summary = "Confirm order", description = "Mark an order as paid and confirm it after checkout")
+    @PostMapping("/{orderId}/confirm")
+    public ResponseEntity<OrderDetailResponse> confirmOrder(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID orderId) {
+
+        Order order = orderService.confirmOrder(user.getId(), orderId);
         return ResponseEntity.ok(toResponse(order));
     }
 
