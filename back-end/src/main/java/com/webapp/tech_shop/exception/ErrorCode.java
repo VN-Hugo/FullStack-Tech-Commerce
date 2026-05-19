@@ -19,6 +19,9 @@ public enum ErrorCode {
     ORDER_NOT_FOUND("ORDER_001", "Order Not Found", "The requested order does not exist", HttpStatus.NOT_FOUND),
     ORDER_CANNOT_CONFIRM("ORDER_002", "Cannot Confirm Order", "The order cannot be confirmed in its current status", HttpStatus.BAD_REQUEST),
     INSUFFICIENT_STOCK("ORDER_003", "Insufficient Stock", "The requested product quantity is not enough", HttpStatus.BAD_REQUEST),
+    PAYMENT_NOT_FOUND("PAYMENT_001", "Payment Not Found", "The requested payment record does not exist", HttpStatus.NOT_FOUND),
+    PAYMENT_INVALID_AMOUNT("PAYMENT_002", "Invalid Payment Amount", "The payment amount does not match the order total", HttpStatus.BAD_REQUEST),
+    PAYMENT_FAILED("PAYMENT_003", "Payment Failed", "The payment could not be processed", HttpStatus.BAD_REQUEST),
     // Cart Errors 
     CART_NOT_FOUND("CART_001", "Cart Not Found", "The requested cart does not exist", HttpStatus.NOT_FOUND),
     CART_ITEM_NOT_FOUND("CART_002", "Cart Item Not Found", "The requested cart item does not exist", HttpStatus.NOT_FOUND),
