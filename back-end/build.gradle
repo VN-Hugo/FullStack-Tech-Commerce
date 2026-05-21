@@ -21,6 +21,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	runtimeOnly 'com.h2database:h2'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	//JPA
 	implementation("org.springframework.boot:spring-boot-starter")
@@ -43,6 +45,8 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
 	// OAuth2
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	// H2 Database
+	runtimeOnly 'com.h2database:h2'
 
 }
 

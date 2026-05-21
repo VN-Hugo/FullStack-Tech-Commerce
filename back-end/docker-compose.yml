@@ -7,9 +7,10 @@ services:
     environment:
       - POSTGRES_DB=tech_shop_db
       - POSTGRES_USER=${DB_USERNAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD} # Lấy từ .env
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./src/main/resources/db/migration:/docker-entrypoint-initdb.d:ro
     restart: unless-stopped
 
   app:
